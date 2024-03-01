@@ -1,0 +1,20 @@
+name: Docker Image CI for GHCR
+
+on:
+    push
+
+jobs:
+    build_and_publish:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: npm install
+              run: npm ci
+            - name: run the unit tests
+              run: npm test
+            - uses: actions/checkout@v3
+            - name: Build and push the image
+              run: |
+                docker login --username krishna1priya --password ${{secrets.ACCESS_TOKEN}} ghcr.io
+                docker build -t ghcr.io/krishna1priya/arithmeticService:latest --file Dockerfile .  
+                docker push ghcr.io/krishna1priya/arithmeticService:latest 
